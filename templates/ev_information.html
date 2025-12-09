@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Electric Vehicle Information</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
+
+    <script type="module" src="{{ url_for('static', path='/firebase-login.js') }}"></script>
+   <style>
+     #info-container1 {
+            text-align: center;
+            margin: 20px auto;
+            background-color: #04AA6D;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+        }
+
+        #info-container1 h1 {
+            margin-bottom: 20px;
+        }
+
+        #reviews-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-top: 20px;
+            color: rgb(13, 190, 22);
+            background-color: #282c35;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        #reviews-container ul {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        #reviews-container li {
+            list-style: none;
+            display: inline-block;
+            margin-right: 10px;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #reviews-container h2 {
+            margin-bottom: 10px;
+        }
+
+        #info-container1 a {
+            color: #ffffff;
+            text-decoration: none;
+            border: 1px solid #ffffff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        #info-container1 a:hover {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        #info-container1 button{
+            color: #ffffff;
+            text-decoration: none;
+            border: 1px solid #ffffff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+        #info-container1 button:hover{
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        #form-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #vehicle-image {
+            width: 30%;
+            height: 40%;
+            margin-top: 10px;
+            float: right;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+   </style>
+</head>
+
+<body>
+    <div class="navbar">
+       {% if user_token %}
+        <a class="active"><button id="sign-out">Sign Out</button></a>
+        {% endif %}
+        <a  class="active"href="/select-ev">Compare</a> 
+        {% if user_token %}
+    <a id="add-ev-link" class="active" href="/add-ev">Add EV</a>
+        {% endif %}
+        <a class="active" href="/">Home</a> 
+
+        
+      </div>
+      <div id="image-container">
+        <img id="vehicle-image" src="{{ev_info.image_url}}" alt="Vehicle Image">
+    </div>
+    
+    <div id="info-container1">
+        <h1>Electric Vehicle Information</h1>
+        <h2>Model: {{ ev_info.model }}</h2>
+        <p>Manufacturer: {{ ev_info.manufacturer }}</p>
+        <p>Year: {{ ev_info.year }}</p>
+        <p>Battery Size: {{ ev_info.battery_size }}</p>
+        <p>WLTP Range: {{ ev_info.wltp_range }}</p>
+        <p>Cost: {{ ev_info.cost }}</p>
+        <p>Power: {{ ev_info.power }}</p>
+        {% if user_token %}
+
+        <a style="text-decoration: none;" href="{{ url_for('edit_ev', ev_model=ev_info.model) }}">Edit</a>
+        <form method="post" action="{{ url_for('delete_ev', ev_model=ev_info.model) }}">
+         <br>   <button style="background-color: transparent;" type="submit">Delete</button>
+        </form>
+        {% endif %}
+    </div>
+    <div id="reviews-container">
+            <h2>Reviews</h2>
+        {% if reviews %}
+        <ul>
+            {% for review in reviews %}
+            <li>
+                <p>User: {{ review.user_id }}</p>
+                <p>Rating: {{ review.rating }}</p>
+                <p>Comment: {{ review.comment }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+  <p style="color: #ffffff;">Average Rating: {{ average_rating }}</p>
+        {% else %}
+        <p>No reviews available.</p>
+        {% endif %}
+         {% if user_token %}
+
+        <div class="form-container">
+        <div id="message"></div>
+            <form action="/submit-review/{{ ev_info.model }}" method="post" id="reviewForm">
+            <label for="user">User:</label>
+            <input type="text" id="user" name="user" ><br>
+
+            <label for="rating">Rating:</label>
+            <input type="number" id="rating" name="rating"  min="1"
+            max="10"
+            oninput="validateRating()"
+            required ><br>
+            <span id="rating-error" style="color: red;"></span>
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" ></textarea><br>
+
+            <input type="button" value="Submit Review" onclick="submitReview()">
+        </form>
+    </div>
+    {% endif %}
+    </div>
+
+   
+    <script>
+        function validateRating() {
+    var ratingInput = document.getElementById('rating');
+    var errorSpan = document.getElementById('rating-error');
+
+    if (ratingInput.validity.rangeOverflow || ratingInput.validity.rangeUnderflow) {
+      errorSpan.textContent = 'Please enter a number between 1 and 10';
+    } else {
+      errorSpan.textContent = '';
+    }
+  }
+         function submitReview() {
+    const formData = {
+        user_id: document.getElementById('user').value,
+        rating: parseInt(document.getElementById('rating').value),
+        comment: document.getElementById('comment').value,
+        timestamp: new Date().toISOString(),
+    };
+
+
+    fetch(`/submit-review/{{ ev_info.model }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+       
+        return response.text();
+    })
+    .then(data => {
+        console.log('Response text:', data);
+        try {
+            const jsonData = JSON.parse(data);
+            console.log('Parsed JSON data:', jsonData);
+            document.getElementById('message').innerHTML = "<p> added successfully</p>";
+
+           } catch (jsonError) {
+            console.error('Error parsing JSON:', jsonError);
+                console.log('Response details:', jsonError.response);
+           
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting review:', error);
+        console.log('Response details:', error.response);
+       
+    });
+}
+
+    </script>
+</body>
+
+</html>

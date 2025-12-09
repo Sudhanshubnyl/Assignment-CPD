@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+     <title>Edit Electric Vehicle</title>
+</head>
+<body>
+{% if user_token %}
+<h2>Edit Electric Vehicle:</h2>
+<div id="success-message"></div>
+<form id="editEvForm">
+    <label for="model">Model:</label>
+    <input type="text" id="model" name="model" value="{{ ev_info.model }}" required><br>
+
+    <label for="manufacturer">Manufacturer:</label>
+    <input type="text" id="manufacturer" name="manufacturer" value="{{ ev_info.manufacturer }}" required><br>
+
+    <label for="year">Year:</label>
+    <input type="number" id="year" name="year" value="{{ ev_info.year }}" required><br>
+
+    <label for="battery_size">Battery Size:</label>
+    <input type="number" id="battery_size" step="0.01" name="battery_size" value="{{ ev_info.battery_size }}" required><br>
+
+    <label for="wltp_range">WLTP Range:</label>
+    <input type="number" id="wltp_range" name="wltp_range" value="{{ ev_info.wltp_range }}" required><br>
+
+    <label for="cost">Cost:</label>
+    <input type="number" id="cost" step="0.01" name="cost" value="{{ ev_info.cost }}" required><br>
+
+    <label for="power">Power:</label>
+    <input type="number" id="power" name="power" value="{{ ev_info.power }}" required><br>
+
+    <input type="button" value="Update EV" onclick="editEv()">
+</form>
+{% else %}
+<p>Not authenticated. Please <a href="/">login</a>.</p>
+{% endif%}
+
+<script>
+    function editEv() {
+        const formData = {
+            model: document.getElementById('model').value,
+            manufacturer: document.getElementById('manufacturer').value,
+            year: document.getElementById('year').value,
+            battery_size: document.getElementById('battery_size').value,
+            wltp_range: document.getElementById('wltp_range').value,
+            cost: document.getElementById('cost').value,
+            power: document.getElementById('power').value
+        };
+
+        const evInfoModel = "{{ ev_info.model }}";
+
+        // Fetch the authentication token from cookies
+        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+
+        fetch(`/edit-ev/${evInfoModel}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`  // Include the token in the headers
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to edit EV details');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('EV details edited successfully:', data);
+                const successMessage = document.getElementById("success-message");
+                
+                    successMessage.innerText = 'EV details updated successfully';
+                    successMessage.style.display = 'block';
+                
+            })
+            .catch(error => {
+                console.error('Error editing EV details:', error);
+            });
+    }
+</script>
+
+
+</body>
+
+</html>

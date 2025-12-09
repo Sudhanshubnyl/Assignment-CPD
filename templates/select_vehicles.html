@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Electric Vehicles for Comparison</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
+    <script type="module" src="{{ url_for('static', path='/firebase-login.js') }}"></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/" class="active"><button id="sign-out">Sign Out</button></a>
+        
+        <a  class="active"href="/select-ev">Compare</a> 
+        {% if user_token %}
+    <a id="add-ev-link" class="active" href="/add-ev">Add EV</a>
+        {% endif %}
+        <a class="active" href="/">Home</a> 
+    </div><br>
+
+    <div class="form-container">
+        <h2>Select Electric Vehicles for Comparison</h2>
+        <form id="compareEvForm" action="/compare-evs" method="post">
+            <label for="ev1">Select EV 1:</label>
+            <select id="ev1" name="ev1" required>
+                {% for ev in ev_list %}
+                <option value="{{ ev.model }}">{{ ev.model }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="ev2">Select EV 2:</label>
+            <select id="ev2" name="ev2" required>
+                {% for ev in ev_list %}
+                <option value="{{ ev.model }}">{{ ev.model }}</option>
+                {% endfor %}
+            </select><br>
+
+            <input type="submit" value="Compare EVs">
+        </form>
+    </div>
+</body>
+
+</html>

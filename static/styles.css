@@ -1,0 +1,208 @@
+body {font-family: Arial, Helvetica, sans-serif;background-color: #000000;}
+
+.ev-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+#sign-out {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;   
+}
+
+.ev-card {
+    box-sizing: border-box;
+    width: 300px; 
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #04AA6D;
+    text-decoration: none;
+}
+
+.ev-card img {
+    max-width: 50%;
+    height: 50%;
+    border-radius: 4px;
+}
+
+
+#sign-out {
+    border: 3px solid transparent;
+    border-radius: 8px;
+}
+
+.navbar {
+    width: 100%;
+    border-bottom: 3px solid white; 
+    background-color: #000000;
+    overflow: auto;
+}
+
+.navbar a {
+    float: right;
+    text-align: center;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    margin-left: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.navbar a:not(:last-child) {
+    margin-right: 2px;
+}
+.navbar a:hover {
+    background-color: #000;
+}
+.active {
+    background-color: #04AA6D;
+}
+
+@media screen and (max-width: 500px) {
+    .navbar a {
+        float: none;
+        display: block;
+    }
+}
+
+.main-section {
+    height: auto;
+    position: relative;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    flex-wrap: wrap;
+    transition: all 0.5s linear;
+}
+
+.info-container {
+    background-color: #04AA6D;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 2%; 
+    width: 38%;
+    flex-grow: 1; 
+}
+
+.img-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.img-container::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    height: 90%;
+    width: 70%;
+    background: rgb(214, 217, 222);
+    background: radial-gradient(circle, rgb(1, 146, 45) 2%,#04AA6D 64%);
+    filter: blur(10%);
+    z-index: -1;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+    min-width: 100%;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+}
+#login_box {
+  background-color: #04AA6D; 
+  padding: 20px; 
+  border-radius: 8px;
+  margin: 20px auto; 
+  width: 300px; 
+  text-align: center;
+  color: #000000;
+}
+
+#login_box input[type="email"],
+#login_box input[type="password"] {
+  width: 100%;
+  margin-bottom: 10px; 
+  
+}
+#login_box button {
+  width: 100%; 
+  margin-top: 10px; 
+  background-color: #04AA6D;
+  color: white; 
+  padding: 10px; 
+  border: none;
+  border-radius: 4px; 
+  cursor: pointer; 
+}
+
+#login_box button:hover {
+  background-color: #000000; 
+}
+
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f4f4;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+.form-container input[type="submit"] {
+  background-color: #04AA6D;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+}
+
+
+.form-container input[type="submit"]:hover {
+  background-color: #000000; 
+}

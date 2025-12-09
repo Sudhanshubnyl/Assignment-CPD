@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>EV Comparison</title>
+    <script type="module" src="{{ url_for('static', path='/firebase-login.js') }}"></script>
+</head>
+<style>
+    .highlight-green {
+        color: green;
+    }
+
+    .highlight-red {
+        color: red;
+    }
+</style>
+<body>
+    <h2>Electric Vehicle Comparison:</h2>
+<div class="comparisontable">
+
+	<ul class="row">
+		<li><br />{% if ev_info1.image_url %}
+            <img src="{{ ev_info1.image_url }}" >
+        {% else %}
+            No Image Available
+        {% endif %}</li>
+		<li><br />{% if ev_info2.image_url %}
+            <img src="{{ ev_info2.image_url }}" >
+        {% else %}
+            No Image Available
+        {% endif %}</li>
+		</ul>
+	
+	<ul class="row">
+		<li class="legend">Model</li>
+		<li style="text-decoration: none;"><a href="{{ url_for('ev_information', ev_id=ev_info1.model) }}">{{ ev_info1.model }}</a></li>
+		<li style="text-decoration: none;"><a href="{{ url_for('ev_information', ev_id=ev_info2.model) }}">{{ ev_info2.model }}</a></li>
+		
+	</ul>
+	
+	<ul class="row">
+		<li class="legend">Manufacturer</li>
+		<li>{{ ev_info1.manufacturer }}</li>
+		<li>{{ ev_info2.manufacturer }}</li>
+		
+	</ul>
+	
+	<ul class="row">
+		<li class="legend">Cost</li>
+    <li class="{% if ev_info1.cost < ev_info2.cost %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info1.cost }}</li>
+    <li class="{% if ev_info2.cost < ev_info1.cost %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info2.cost }}</li>
+
+		
+	</ul>
+	
+	<ul class="row">
+		<li class="legend">Battery Size</li>
+    <li class="{% if ev_info1.battery_size > ev_info2.battery_size %}highlight-green{% else%}highlight-red{% endif %}">{{ ev_info1.battery_size }}</li>
+    <li class="{% if ev_info2.battery_size > ev_info1.battery_size %}highlight-green{% else%}highlight-red{% endif %}">{{ ev_info2.battery_size }}</li>
+
+	</ul>
+	
+	<ul class="row">
+		<li class="legend">Power</li>
+    <li class="{% if ev_info1.power < ev_info2.power %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info1.power }}</li>
+    <li class="{% if ev_info2.power < ev_info1.power %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info2.power }}</li>
+	</ul>
+
+    <ul class="row">
+            <li class="legend">year</li>
+            <li>{{ ev_info1.year }}</li>
+             <li>{{ ev_info2.year }}</li>
+                 </ul>    
+    <ul class="row">
+            <li class="legend">wltp_range</li>
+            <li class="{% if ev_info1.wltp_range > ev_info2.wltp_range %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info1.wltp_range }}</li>
+    <li class="{% if ev_info2.wltp_range > ev_info1.wltp_range %}highlight-green{% else %}highlight-red{% endif %}">{{ ev_info2.wltp_range }}</li>
+
+                    </ul>  
+    <ul class="row">
+            <li class="legend">Average rating</li>
+            <li class="{% if highest1 %}highlight-green{% elif lowest1 %}highlight-red{% endif %}" >{{ average_score1 }}</li>
+            <li class="{% if highest2 %}highlight-green{% elif lowest2 %}highlight-red{% endif %}" >{{ average_score2 }}</li>
+                    </ul>                           
+
+</div>
+</body>
+<style>
+    div.comparisontable{
+  display: flex;
+  flex-direction: column;
+}
+
+div.comparisontable img{
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+
+div.comparisontable ul.row{
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+div.comparisontable ul.row li{
+  background: #b1f2a7;
+  flex: 1;
+  padding: 10px;
+  border-bottom: 1px solid gray;
+}
+
+div.comparisontable ul.row li.legend{
+ 	background: #000000;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 200px;
+  border-bottom: 1px solid white;
+}
+
+
+
+div.comparisontable ul.row:first-of-type li{
+  text-align: center;
+}
+
+div.comparisontable ul.row:last-of-type li{
+  
+  border-bottom: none;
+  
+}
+
+
+div.comparisontable a.calltoaction{
+  color: white;
+  background: #e12525;
+  display: inline-block;
+  padding: 8px 10px;
+  text-decoration: none;
+  border-radius: 8px;
+  margin: .1em auto;
+}
+
+div.comparisontable a.calltoaction:hover{
+  background: #d11212;
+}
+
+
+div.comparisontable ul.row:first-of-type li.legend.legend
+{
+  background: transparent;
+  box-shadow: none;
+}
+
+@media screen and (max-width:650px){
+  
+  div.comparisontable ul.row{
+    flex-direction: column;
+  }
+  
+  div.comparisontable img{
+    width: auto;
+    height: auto;
+  }
+  
+  div.comparisontable ul.row li{
+    margin-right: 0;
+		flex: auto;
+    width: auto;
+  }
+  
+  div.comparisontable ul.row:first-of-type li.legend.legend
+  {
+    display: none;
+  }
+  
+  div.comparisontable ul.row li.legend{
+    width: auto;
+  }
+}
+
+</style>
+</html>

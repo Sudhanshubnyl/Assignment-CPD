@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electric Vehicle Database</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
+
+    <script type="module" src="{{ url_for('static', path='/firebase-login.js') }}"></script>
+    </head>
+    
+<body>
+    
+    <div class="navbar">
+       
+        <a href="/" class="active"><button id="sign-out">Sign Out</button></a>
+        
+        <a  class="active"href="/select-ev">Compare</a> 
+        {% if user_token %}
+    <a id="add-ev-link" class="active" href="/add-ev">Add EV</a>
+        {% endif %}
+        <a class="active" href="/">Home</a> 
+        
+        
+      </div>
+    </br>
+      <div id="login_box" >
+        Email: <input type="email" name="" id="email"><br/>
+        Password: <input type="password" name="" id="password"><br/>
+        <button id="login">Login</button>
+        <button id="sign-up">Sign up</button>
+    </div>
+    <section class="main-section">
+        <div class="info-container">
+            <h2>EV INFORMATION </h2>
+            <h3>One Place For All Your EV Needs.. SEARCH,COMPARE. </h3>
+            <div class="form-container">
+                <form id="queryEvForm" action="/query-ev" method="post">
+                    <label for="attribute">Select Attribute:</label>
+                    <select id="attribute" name="attribute">
+                        <option value=""></option>
+                        <option value="model">Model</option>
+                        <option value="manufacturer">Manufacturer</option>
+                        <option value="cost">Cost</option>
+                        <option value="wltp_range">Range</option>
+                    </select>
+    
+                    <label for="value">Value:</label>
+                    <input type="text" id="value" name="value">
+    
+                    <label for="min_range">Min Range:</label>
+                    <input type="number" id="min_range" name="min_range">
+    
+                    <label for="max_range">Max Range:</label>
+                    <input type="number" id="max_range" name="max_range">
+    
+                    <input type="submit" value="Search EVs">
+                </form>
+                <h1>Query Results</h1>
+    
+               
+            </div>
+        </div>
+        // section referred from online site 
+        <div class="img-container">
+            <div class="slider-container">
+                <div class="slider" id="slider"></div>
+            </div>
+        </div>
+    </section>
+    
+    <h2>Electric Vehicles:</h2>
+    <div class="ev-container"> 
+        {% for ev in ev_list %}
+        <a href="{{ url_for('ev_information', ev_id=ev.model) }}"> <div class="ev-card">
+                {% if ev.image_url %}
+                    <img src="{{ ev.image_url }}" >
+                {% else %}
+                    No Image Available
+                {% endif %}
+                <p>{{ ev.model }} - {{ ev.manufacturer }}</p>
+            </div></a>
+        {% endfor %}
+    </div>
+
+
+
+</body>
+<script>
+    const slider = document.getElementById("slider");
+
+    const imageArray = [
+        "https://freepngimg.com/thumb/car/11-2-car-picture.png",
+        "https://th.bing.com/th/id/R.f33cf38ca8ffd16e0d74c1c0b488e6fa?rik=fJRkDZtpLif1Tw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fcar-png--2000.png&ehk=NNUZMtBWVKsm0rdwbqInd9upaYDYo6ztYC62khvQebc%3d&risl=&pid=ImgRaw&r=0",
+        "https://www.freepnglogos.com/uploads/car-png/car-png-large-images-40.png",
+        "https://th.bing.com/th/id/R.9052ad8da8f202ddc156c25f34d6fd1c?rik=nlkKLYI8fPWZ%2fg&riu=http%3a%2f%2fwww.pngmart.com%2ffiles%2f4%2fCar-PNG-Photo.png&ehk=3sUxHFuF6H3gz5sLgPZmnqhw1%2fVjAIi7yecdiiBu69c%3d&risl=&pid=ImgRaw&r=0",
+    ];
+
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        const newPosition = -index * 100 + "%";
+        slider.style.transform = "translateX(" + newPosition + ")";
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % imageArray.length;
+        showSlide(currentIndex);
+    }
+
+    setInterval(nextSlide, 3000);
+    imageArray.forEach((imageUrl) => {
+        const slide = document.createElement("div");
+        slide.classList.add("slide");
+
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = "Slider Image";
+        image.classList.add("image");
+
+        slide.appendChild(image);
+        slider.appendChild(slide);
+    });
+
+    showSlide(currentIndex);
+</script>
+</html>
