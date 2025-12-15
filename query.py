@@ -49,7 +49,7 @@ def get_reviews_for_ev(model_id: str):
   
     ev_documents = list(ev_ref)
     if not ev_documents:
-        return None  
+        return []  
 
    
     ev_document_id = ev_documents[0].id

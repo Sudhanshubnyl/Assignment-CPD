@@ -3,14 +3,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDs_lx4-SVnctJcyN1biAlzc1PxJ2tnQKE",
-    authDomain: "cloud-assignment-1-414516.firebaseapp.com",
-    projectId: "cloud-assignment-1-414516",
-    storageBucket: "cloud-assignment-1-414516.appspot.com",
-    messagingSenderId: "487762088869",
-    appId: "1:487762088869:web:d881fb570a7555266c4e4c"
-};
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCUUpy7bVTuQpuRonRrUa5tE8jVTtjbl5k",
+    authDomain: "assignment-db79e.firebaseapp.com",
+    projectId: "assignment-db79e",
+    storageBucket: "assignment-db79e.firebasestorage.app",
+    messagingSenderId: "1025418123592",
+    appId: "1:1025418123592:web:fd4ef53d721873fa323b7d"
+  };
+
 
 // firebase-login.js
 window.addEventListener("load", function () {
@@ -27,7 +29,7 @@ window.addEventListener("load", function () {
             const user = userCredentials.user;
 
             user.getIdToken().then((token) => {
-                document.cookie = "token=" + token + ";path=/;SameSite=Strict";
+                document.cookie = "token=" + token + ";path=/;SameSite=Lax"+secure;
                 window.location = "/";
             });
         }).catch((error) => {

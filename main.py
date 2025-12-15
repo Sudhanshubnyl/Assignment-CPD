@@ -324,4 +324,4 @@ async def submit_review(request: Request, ev_model: str, review: Review):
     # Return a JSON response indicating success
     return JSONResponse(content={"message": "Review submitted successfully"}, status_code=200)
 def get_current_timestamp():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.utcnow().isoformat() + "Z"
