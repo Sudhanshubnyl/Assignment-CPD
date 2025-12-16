@@ -87,6 +87,9 @@ async def add_ev(request: Request):
     
     return templates.TemplateResponse('add_vehicles.html',  {'request': request, 'user_token': user_token, 'error_message': None, 'user_info': None, 'ev_list': None})
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/add-ev")
 async def add_ev_post(request: Request, ev_data: EVData):
