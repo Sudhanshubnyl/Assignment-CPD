@@ -1,100 +1,123 @@
 'use strict';
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyCUUpy7bVTuQpuRonRrUa5tE8jVTtjbl5k",
-    authDomain: "assignment-db79e.firebaseapp.com",
-    projectId: "assignment-db79e",
-    storageBucket: "assignment-db79e.firebasestorage.app",
-    messagingSenderId: "1025418123592",
-    appId: "1:1025418123592:web:fd4ef53d721873fa323b7d"
-  };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCUUpy7bVTuQpuRonRrUa5tE8jVTtjbl5k",
+  authDomain: "assignment-db79e.firebaseapp.com",
+  projectId: "assignment-db79e",
+  storageBucket: "assignment-db79e.firebasestorage.app",
+  messagingSenderId: "1025418123592",
+  appId: "1:1025418123592:web:fd4ef53d721873fa323b7d",
+};
 
-
-// firebase-login.js
-window.addEventListener("load", function () {
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    updateUI(document.cookie);
-    console.log("hello world load");
-
-    document.getElementById("sign-up").addEventListener('click', function () {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        createUserWithEmailAndPassword(auth, email, password).then((userCredentials) => {
-            const user = userCredentials.user;
-
-            user.getIdToken().then((token) => {
-                document.cookie = "token=" + token + ";path=/;SameSite=Lax"+secure;
-                window.location = "/";
-            });
-        }).catch((error) => {
-            console.error(error.code, error.message);
-        })
-    });
-
-    document.getElementById("login").addEventListener('click', function () {
-        console.log("Login button clicked");
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredentials) => {
-                const user = userCredentials.user;
-                console.log("logged in");
-
-                user.getIdToken().then((token) => {
-                    document.cookie = "token=" + token + ";path=/;SameSite=Strict";
-                    window.location = "/";
-                });
-            })
-            .catch((error) => {
-                console.log(error.code + error.message);
-            })
-    });
-
-    document.getElementById("sign-out").addEventListener('click', function () {
-        signOut(auth).then(() => {
-            document.cookie = "token=;path=/;SameSite=Strict";
-            window.location = "/";
-        });
-    });
-
-
-});
-
-
-function updateUI(cookie) {
-    var token = parseCookieToken(cookie);
-    
-    console.log("Token:", token);
-    
-
-    if (token.length>0) {
-        console.log("User is authenticated. Showing electric vehicle content.");
-         document.getElementById("login_box").hidden=true;
-         document.getElementById("sign-out").hidden=false;
-    } else {
-        console.log("User is not authenticated. Hiding electric vehicle content.");
-        document.getElementById("login_box").hidden=false;
-        document.getElementById("sign-out").hidden=true;
-    }
+function setTokenCookie(token) {
+  // Only set Secure when the site is actually served over HTTPS
+  const secure = (location.protocol === "https:") ? "; Secure" : "";
+  // Lax is usually best for normal web apps
+  document.cookie = `token=${token}; Path=/; SameSite=Lax${secure}`;
 }
 
+function clearTokenCookie() {
+  const secure = (location.protocol === "https:") ? "; Secure" : "";
+  document.cookie = `token=; Max-Age=0; Path=/; SameSite=Lax${secure}`;
+}
 
 function parseCookieToken(cookie) {
-    var strings = cookie.split(';');
-
-    for (let i = 0; i < strings.length; i++) {
-        var temp = strings[i].split('=');
-        if (temp[0].trim() === "token") {
-            return temp[1].trim();
-        }
+  const parts = cookie.split(';');
+  for (let i = 0; i < parts.length; i++) {
+    const kv = parts[i].split('=');
+    if (kv[0] && kv[0].trim() === "token") {
+      return (kv[1] || "").trim();
     }
-
-    return "";
+  }
+  return "";
 }
+
+function updateUI() {
+  const token = parseCookieToken(document.cookie);
+
+  const loginBox = document.getElementById("login_box");
+  const signOutBtn = document.getElementById("sign-out");
+
+  if (token && token.length > 0) {
+    if (loginBox) loginBox.hidden = true;
+    if (signOutBtn) signOutBtn.hidden = false;
+  } else {
+    if (loginBox) loginBox.hidden = false;
+    if (signOutBtn) signOutBtn.hidden = true;
+  }
+}
+
+window.addEventListener("load", function () {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  updateUI();
+
+  const signupBtn = document.getElementById("sign-up");
+  const loginBtn = document.getElementById("login");
+  const signOutBtn = document.getElementById("sign-out");
+
+  if (signupBtn) {
+    signupBtn.addEventListener("click", async function () {
+      const emailEl = document.getElementById("email");
+      const passEl = document.getElementById("password");
+
+      const email = emailEl ? emailEl.value : "";
+      const password = passEl ? passEl.value : "";
+
+      try {
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredentials.user;
+        const token = await user.getIdToken();
+        setTokenCookie(token);
+        window.location = "/";
+      } catch (error) {
+        console.error(error.code, error.message);
+        alert(error.message);
+      }
+    });
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async function () {
+      const emailEl = document.getElementById("email");
+      const passEl = document.getElementById("password");
+
+      const email = emailEl ? emailEl.value : "";
+      const password = passEl ? passEl.value : "";
+
+      try {
+        const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredentials.user;
+        const token = await user.getIdToken();
+        setTokenCookie(token);
+        window.location = "/";
+      } catch (error) {
+        console.error(error.code, error.message);
+        alert(error.message);
+      }
+    });
+  }
+
+  if (signOutBtn) {
+    signOutBtn.addEventListener("click", async function () {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        // Even if Firebase signOut fails, still clear the cookie
+        console.error(error.code, error.message);
+      }
+      clearTokenCookie();
+      window.location = "/";
+    });
+  }
+});
