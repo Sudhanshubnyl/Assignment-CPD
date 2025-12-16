@@ -33,7 +33,7 @@ steps:
       - --update-secrets
       - /secrets/firebase-sa.json=FIREBASE_SA_JSON:latest
       - --update-env-vars
-      - FIREBASE_CREDENTIALS_PATH=/secrets/firebase-sa.json
+      - FIREBASE_CREDENTIALS_PATH=/secrets/firebase-sa.json,FIRESTORE_DATABASE=assignment
 
 images:
   - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
