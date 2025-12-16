@@ -1,0 +1,40 @@
+substitutions:
+  _REGION: europe-west2
+  _SERVICE: ev-fastapi
+  _REPO: cloudrun-repo
+  _RUNTIME_SA: run-sa
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
+
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
+      - --region
+      - ${_REGION}
+      - --platform
+      - managed
+      - --allow-unauthenticated
+      - --service-account
+      - ${_RUNTIME_SA}@$PROJECT_ID.iam.gserviceaccount.com
+      - --update-secrets
+      - /secrets/firebase-sa.json=FIREBASE_SA_JSON:latest
+      - --update-env-vars
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/firebase-sa.json
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
