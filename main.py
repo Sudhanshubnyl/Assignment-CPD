@@ -22,7 +22,7 @@ FIREBASE_CRED_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
 if FIREBASE_CRED_PATH and not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(FIREBASE_CRED_PATH))
 
-firestore_db = firestore.Client()
+firestore_db = firestore.Client(database=os.getenv("FIRESTORE_DATABASE", "(default)"))
 fire_base_request_adapter = requests.Request()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory="templates")

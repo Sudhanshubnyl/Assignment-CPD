@@ -2,7 +2,7 @@ from datetime import datetime
 from google.cloud import firestore
 from fastapi import HTTPException
 
-firestore_db = firestore.Client()
+firestore_db = firestore.Client(database=os.getenv("FIRESTORE_DATABASE", "(default)"))
 
 def get_ev_info_from_data_source(model: str):
    
