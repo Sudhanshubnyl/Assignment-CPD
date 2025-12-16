@@ -28,7 +28,6 @@ steps:
       - ${_REGION}
       - --platform
       - managed
-      - --allow-unauthenticated
       - --service-account
       - ${_RUNTIME_SA}@$PROJECT_ID.iam.gserviceaccount.com
       - --update-secrets
