@@ -38,3 +38,6 @@ steps:
 
 images:
   - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID
+  
+options:
+  logging: CLOUD_LOGGING_ONLY
