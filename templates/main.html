@@ -58,12 +58,6 @@
                
             </div>
         </div>
-        // section referred from online site 
-        <div class="img-container">
-            <div class="slider-container">
-                <div class="slider" id="slider"></div>
-            </div>
-        </div>
     </section>
     
     <h2>Electric Vehicles:</h2>
@@ -83,42 +77,5 @@
 
 
 </body>
-<script>
-    const slider = document.getElementById("slider");
 
-    const imageArray = [
-        "https://freepngimg.com/thumb/car/11-2-car-picture.png",
-        "https://th.bing.com/th/id/R.f33cf38ca8ffd16e0d74c1c0b488e6fa?rik=fJRkDZtpLif1Tw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fcar-png--2000.png&ehk=NNUZMtBWVKsm0rdwbqInd9upaYDYo6ztYC62khvQebc%3d&risl=&pid=ImgRaw&r=0",
-        "https://www.freepnglogos.com/uploads/car-png/car-png-large-images-40.png",
-        "https://th.bing.com/th/id/R.9052ad8da8f202ddc156c25f34d6fd1c?rik=nlkKLYI8fPWZ%2fg&riu=http%3a%2f%2fwww.pngmart.com%2ffiles%2f4%2fCar-PNG-Photo.png&ehk=3sUxHFuF6H3gz5sLgPZmnqhw1%2fVjAIi7yecdiiBu69c%3d&risl=&pid=ImgRaw&r=0",
-    ];
-
-    let currentIndex = 0;
-
-    function showSlide(index) {
-        const newPosition = -index * 100 + "%";
-        slider.style.transform = "translateX(" + newPosition + ")";
-    }
-
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % imageArray.length;
-        showSlide(currentIndex);
-    }
-
-    setInterval(nextSlide, 3000);
-    imageArray.forEach((imageUrl) => {
-        const slide = document.createElement("div");
-        slide.classList.add("slide");
-
-        const image = document.createElement("img");
-        image.src = imageUrl;
-        image.alt = "Slider Image";
-        image.classList.add("image");
-
-        slide.appendChild(image);
-        slider.appendChild(slide);
-    });
-
-    showSlide(currentIndex);
-</script>
 </html>
