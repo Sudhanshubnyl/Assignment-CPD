@@ -1,4 +1,8 @@
 from typing import List
+import os
+import firebase_admin
+from firebase_admin import credentials, auth
+
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,6 +17,11 @@ import datetime
 from fastapi import Query
 from query import get_ev_info_from_data_source, get_ev_info_from_data_source1,update_ev_data, update_ev_data_reviews,get_reviews_for_ev,calculate_average_score
 app = FastAPI()
+FIREBASE_CRED_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
+
+if FIREBASE_CRED_PATH and not firebase_admin._apps:
+    firebase_admin.initialize_app(credentials.Certificate(FIREBASE_CRED_PATH))
+
 firestore_db = firestore.Client()
 fire_base_request_adapter = requests.Request()
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -45,12 +54,15 @@ class EVData(BaseModel):
 def validate_firebase_token(id_token_str):
     if not id_token_str:
         return None
-    user_token = None
     try:
-        user_token = id_token.verify_firebase_token(id_token_str, fire_base_request_adapter)
-    except ValueError as err:
+        decoded = auth.verify_id_token(id_token_str)
+        # keep your existing expectation: user_token['user_id']
+        decoded["user_id"] = decoded.get("uid")
+        return decoded
+    except Exception as err:
         print(str(err))
-    return user_token
+        return None
+
 
 def get_user(user_token):
     user = firestore_db.collection('user').document(user_token['user_id'])
